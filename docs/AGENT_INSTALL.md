@@ -29,13 +29,25 @@ Keep deployment records, logs, generated Teams ZIPs, and branding outside the so
 
 ## 3. Install the external plugin
 
-Clone `https://github.com/Shadoxity/hermes-teams.git` into a staging/release directory outside the Hermes checkout. Pin the reviewed commit or release. Make the repository root available at:
+Prefer a real Git checkout managed by Hermes's native installer. Use the selected Hermes runtime as the deployment user and name the profile explicitly:
+
+```console
+hermes --profile <profile-name> plugins install https://github.com/Shadoxity/hermes-teams.git --no-enable --no-deps
+```
+
+Public repositories can use anonymous HTTPS. For a private repository, use deployment-approved access; `git@github.com:Shadoxity/hermes-teams.git` is also accepted. A repository-scoped read-only deploy key can provide future fetch access without transferring administrator credentials. Keep private keys/tokens outside the checkout and remote URL. Verify repository access as the update user, record the installed commit, and check `origin` and branch upstream without exposing secrets.
+
+The installer places the repository root at:
 
 ```text
 <selected profile home>/plugins/hermes-teams/
 ```
 
-The directory must contain `plugin.yaml`, `__init__.py`, and the runtime modules. A release-directory symlink is suitable when supported by the host. Do not copy `upstream/` reference code into Hermes's bundled plugin directory.
+The directory must contain `plugin.yaml`, `__init__.py`, runtime modules, and `skills/`. `--no-enable` preserves control of the initial cutover; `--no-deps` means dependencies must be managed below. Do not force-replace an existing installation without its protected backup and a reviewed migration. Do not copy `upstream/` reference code into Hermes's bundled plugin directory.
+
+For regular updates, leave the install unpinned and verify it tracks this repository's `origin/main`; Hermes records source/revision/pin state in profile-local `plugins/.install-metadata.json`. If an immutable revision is required, install with `--ref <full-40-character-commit-SHA>`. Native `plugins update` refuses pinned installs; advancing a pin requires an explicit install with `--force --ref <new-full-40-character-commit-SHA>`. `--ref` does not accept a branch or tag.
+
+A release-directory symlink remains an option for loading, but native updates reject a symlink whose target resolves outside the selected profile's `plugins/` directory. That layout requires its own release/symlink update procedure. A copied archive without `.git` cannot use the native Git updater. Prefer the real checkout when the user expects future `hermes plugins update` support.
 
 Use the **selected Hermes runtime's Python** to install/verify the dependencies listed in `pyproject.toml`: `httpx>=0.27,<1`, `aiohttp>=3.9,<4`, and `microsoft-teams-apps==2.0.13.4`. Follow that installation's environment manager instead of assuming system `pip` owns the runtime. This is a source plugin; copying its root and supplying dependencies does not require packaging the entire flat repository with `pip install .`.
 
@@ -84,7 +96,19 @@ skills:
     - /absolute/path/to/installed/hermes-teams/skills
 ```
 
-Replace that path with the discovered installation path, preferably its stable release link. This adds the filesystem name `teams-cards` to the general skill index while the qualified plugin name remains available. Do not also copy the same skill into the profile's skills directory. Apply the normal service restart and use a fresh conversation to refresh the system index. `/reload-skills` can rescan filesystem skills and inform the next turn, but it does not reload plugin Python or replace an existing system prompt. See [Hermes skill guidance](https://hermes-agent.nousresearch.com/docs/guides/work-with-skills/).
+Replace that path with the discovered stable installation path. This adds the filesystem name `teams-cards` to the general skill index while the qualified plugin name remains available. Do not also copy the same skill into the profile's skills directory. Apply the normal service restart and use a fresh conversation to refresh the system index. `/reload-skills` can rescan filesystem skills and inform the next turn, but it does not reload plugin Python or replace an existing system prompt. See [Hermes skill guidance](https://hermes-agent.nousresearch.com/docs/guides/work-with-skills/).
+
+### Future repository updates
+
+For an unpinned checkout tracking `origin/main`, back up the current revision/configuration, inspect local edits, and run:
+
+```console
+hermes --profile <profile-name> plugins update hermes-teams
+```
+
+The updater pulls the checkout's remote/upstream with `--ff-only`; it does not infer the source from `plugin.yaml`. It also handles declared dependencies, bytecode cleanup, scanning, and source metadata. Initial `--no-deps` does not carry forward to updates. Inspect warnings and enabled state: dependency failures may be reported without a failing command, a dangerous scan can disable the plugin, and local-edit conflicts can leave changes in Git stash.
+
+Run the isolated compatibility checks in step 5 against the updated checkout before reloading the existing gateway, then verify shared profiles and the selected adapter. The update command does not reload the gateway. These are explicit updates: no scheduler is installed, and core `hermes update` does not update this external plugin. See [the update procedure](INSTALL.md#update-from-the-repository) for details and the pinned-install distinction.
 
 ## 4. Provision or verify Microsoft resources
 

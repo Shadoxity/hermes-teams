@@ -10,7 +10,17 @@ Do not overwrite bundled Hermes source files. Only one adapter may own each conf
 
 ## Install the external plugin
 
-Install this repository's **root** as the user plugin directory `hermes-teams` under the selected profile's Hermes user-plugin location:
+Use the selected Hermes runtime as the deployment user, with an explicit profile. Prefer the native installer so the repository's **root** becomes a real Git checkout under that profile's user-plugin directory:
+
+```console
+hermes --profile <profile-name> plugins install https://github.com/Shadoxity/hermes-teams.git --no-enable --no-deps
+```
+
+Replace `<profile-name>` with the selected profile. Public repositories can use anonymous HTTPS. For a private repository, establish deployment-approved read access first; the installer also accepts `git@github.com:Shadoxity/hermes-teams.git`. A repository-scoped read-only deploy key is suitable. Keep private keys and tokens outside the repository and Git remote URL, and verify access as the user that will perform updates. Do not transfer an administrator's credentials to the runtime.
+
+`--no-enable` leaves the initial cutover to the configuration steps below. `--no-deps` leaves dependency installation to the selected runtime's environment manager; it does not make dependencies optional. The installer refuses an existing destination by default: preserve and inspect any previous installation before replacing it.
+
+The installed directory contains the repository's runtime modules and bundled skills, including:
 
 ```text
 <profile Hermes home>/plugins/hermes-teams/
@@ -23,11 +33,16 @@ Install this repository's **root** as the user plugin directory `hermes-teams` u
     personal_files.py
     plugin_tools.py
     runtime.py
+    skills/
     summary_writer.py
     transport.py
 ```
 
-The `upstream/` directory contains reference snapshots, not the package to install. Use the deployment host's approved repository access method and record the deployed commit.
+The `upstream/` directory contains reference snapshots, not the package to install. Record the deployed commit and verify that `origin` identifies the intended repository without embedded credentials. An unpinned install tracks the remote's default branch; verify its upstream is `origin/main` for this repository before using regular updates. Hermes records the source, revision, and pin state in the selected profile's `plugins/.install-metadata.json`.
+
+For an immutable installation, add `--ref <full-40-character-commit-SHA>` to the install command. This records a pin: `hermes plugins update` will refuse to advance it. Move a pin deliberately using the install command with `--force --ref <new-full-40-character-commit-SHA>` after backing up and reviewing the new revision. Branch names and tags are not accepted by `--ref`.
+
+A release-directory symlink can still be used for loading when supported by the host. However, Hermes's native updater rejects a plugin symlink whose resolved target is outside the profile's `plugins/` directory. Such deployments need their own reviewed release/symlink update procedure; they are not managed by the update command below. A copied archive without `.git` also cannot use native Git updates.
 
 Install dependencies into the **same Python environment used by that profile's Hermes gateway**. The tested and pinned SDK is `microsoft-teams-apps==2.0.13.4`, with compatible `aiohttp` and `httpx` dependencies from `pyproject.toml`. Follow that runtime's environment manager and check compatibility before changing dependencies. Python 3.11 or later is required.
 
@@ -175,6 +190,24 @@ systemctl --user reload hermes-gateway.service
 ```
 
 Verify the selected adapter, profile identity, actual endpoint, and every shared profile. Do not create a second listener for the same endpoint. For dedicated services, use their documented lifecycle. Reconnection alone is not incoming-message acceptance.
+
+## Update from the repository
+
+Updates are explicit; installing the plugin does not create a scheduler, and updating Hermes core does not update this external plugin. For an unpinned checkout tracking `origin/main`, first retain the current commit/configuration and inspect local changes. Keep deployment settings outside the checkout. Then run the selected runtime's command as the deployment user:
+
+```console
+hermes --profile <profile-name> plugins update hermes-teams
+```
+
+The updater uses the checkout's Git remote and branch upstream, not the repository URL in `plugin.yaml`. It pulls with `--ff-only`, records the new revision when install metadata exists, scans the updated code, clears stale bytecode, and installs declared dependencies. Local edits are automatically stashed and may be reapplied or left in a stash if they conflict; inspect the result rather than assuming those edits survived unchanged. Dependency failures can be warnings, so a completed command alone is not a compatibility check. Initial installation with `--no-deps` does not suppress dependency handling during a later update.
+
+Before activating the updated code, verify the installed commit and plugin enabled state, review dependency/scan results, and run the isolated compatibility suite from the plugin root:
+
+```console
+<Hermes-runtime-python> scripts/test_with_hermes.py --hermes-source <Hermes-source-path>
+```
+
+Only after those checks pass, reload the existing gateway through its verified service lifecycle and confirm every shared profile reconnects. The plugin update command does not reload the gateway. Keep the previous revision and protected configuration backup available for rollback; verify the intended Teams workflow separately when live testing is authorized.
 
 ## Diagnose missing inbound messages
 
