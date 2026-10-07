@@ -43,13 +43,13 @@ The installer places the repository root at:
 <selected profile home>/plugins/hermes-teams/
 ```
 
-The directory must contain `plugin.yaml`, `__init__.py`, runtime modules, and `skills/`. `--no-enable` preserves control of the initial cutover; `--no-deps` means dependencies must be managed below. Do not force-replace an existing installation without its protected backup and a reviewed migration. Do not copy `upstream/` reference code into Hermes's bundled plugin directory.
+The directory must contain `plugin.yaml`, `__init__.py`, runtime modules, and `skills/`. Inspect this runtime's `plugins install --help` and `plugins update --help` before choosing flags. `--no-enable` avoids requesting immediate activation; `--no-deps` means dependencies must be managed below. On managed-runtime versions, `--no-deps` leaves the plugin disabled and cannot replace an active plugin. A supported `--yes-deps` flag supplies already-authorized dependency consent for noninteractive installs; older versions may not accept it. Do not combine those dependency flags or force-replace an existing installation without its protected backup and a reviewed migration. Do not copy `upstream/` reference code into Hermes's bundled plugin directory.
 
 For regular updates, leave the install unpinned and verify it tracks this repository's `origin/main`; Hermes records source/revision/pin state in profile-local `plugins/.install-metadata.json`. If an immutable revision is required, install with `--ref <full-40-character-commit-SHA>`. Native `plugins update` refuses pinned installs; advancing a pin requires an explicit install with `--force --ref <new-full-40-character-commit-SHA>`. `--ref` does not accept a branch or tag.
 
-A release-directory symlink remains an option for loading, but native updates reject a symlink whose target resolves outside the selected profile's `plugins/` directory. That layout requires its own release/symlink update procedure. A copied archive without `.git` cannot use the native Git updater. Prefer the real checkout when the user expects future `hermes plugins update` support.
+A release-directory symlink remains an option for loading, but native updates reject a symlink whose target resolves outside the selected profile's `plugins/` directory. That layout requires its own release/symlink update procedure. A manually copied archive without Git/install provenance cannot use the native Git updater. Prefer the real checkout when the user expects future `hermes plugins update` support.
 
-Use the **selected Hermes runtime's Python** to install/verify the dependencies listed in `pyproject.toml`: `httpx>=0.27,<1`, `aiohttp>=3.9,<4`, and `microsoft-teams-apps==2.0.13.4`. Follow that installation's environment manager instead of assuming system `pip` owns the runtime. This is a source plugin; copying its root and supplying dependencies does not require packaging the entire flat repository with `pip install .`.
+Use the **selected Hermes runtime's environment manager** to prepare/verify the dependencies listed in `pyproject.toml`: `httpx>=0.27,<1`, `aiohttp>=3.9,<4`, and `microsoft-teams-apps==2.0.13.4`. Managed-runtime versions admit plugin selection and dependencies transactionally; do not mutate a committed dependency generation or assume an old in-checkout venv is the live runtime. This is a source plugin; it does not require packaging the entire flat repository with `pip install .`.
 
 Merge, rather than replace, these settings into the selected profile's config:
 
@@ -100,15 +100,23 @@ Replace that path with the discovered stable installation path. This adds the fi
 
 ### Future repository updates
 
-For an unpinned checkout tracking `origin/main`, back up the current revision/configuration, inspect local edits, and run:
+For an unpinned checkout tracking `origin/main`, back up the current revision/configuration, inspect local edits, review/test the proposed revision in isolation, and run:
 
 ```console
 hermes --profile <profile-name> plugins update hermes-teams
 ```
 
-The updater pulls the checkout's remote/upstream with `--ff-only`; it does not infer the source from `plugin.yaml`. It also handles declared dependencies, bytecode cleanup, scanning, and source metadata. Initial `--no-deps` does not carry forward to updates. Inspect warnings and enabled state: dependency failures may be reported without a failing command, a dangerous scan can disable the plugin, and local-edit conflicts can leave changes in Git stash.
+For this repository, the updater uses recorded Git provenance and the checkout's remote/upstream with `--ff-only`, rather than a manifest homepage. Older updaters mutate the checkout and can report caution/dependency warnings; a dangerous scan can disable the plugin. Transactional versions stage the candidate and dependencies before publication, and can **block caution findings** without an update-time acceptance prompt. New dependencies may require interactive consent. Initial `--no-deps` does not carry forward to updates.
 
-Run the isolated compatibility checks in step 5 against the updated checkout before reloading the existing gateway, then verify shared profiles and the selected adapter. The update command does not reload the gateway. These are explicit updates: no scheduler is installed, and core `hermes update` does not update this external plugin. See [the update procedure](INSTALL.md#update-from-the-repository) for details and the pinned-install distinction.
+If a staged update is blocked by reviewed caution findings, retain the backup, inspect the complete scan, and use the supported force-reinstall path after candidate checks. When `plugins install --help` lists `--yes-deps`:
+
+```console
+hermes --profile <profile-name> plugins install <recorded-source-URL> --force --yes-deps --no-enable
+```
+
+Use the same recorded source, omit unsupported flags on older versions, and retain any explicit pin with the intended new full `--ref`. `--force` accepts caution and replacement, never a dangerous verdict; keep the scanner enabled. On active transactional replacements, `--no-enable` preserves selection and avoids the install command's immediate activation request. It does not disable an already active plugin. Check local-file preservation and the resulting commit.
+
+Run the isolated compatibility checks in step 5 against the installed result before the intended service reload, then verify shared profiles and the selected adapter. Some install/enable/dashboard paths notify a running gateway immediately; inspect the installed implementation and avoid immediate-enable actions before preflight. This runbook creates no scheduler or automatic-apply setting, and does not rely on a core upgrade to update the plugin. See [the update procedure](INSTALL.md#update-from-the-repository) for version differences and pinned installations.
 
 ## 4. Provision or verify Microsoft resources
 
@@ -136,7 +144,7 @@ Use a temporary test profile, not the production profile, for compatibility test
 <Hermes-runtime-python> scripts/test_with_hermes.py --hermes-source <Hermes-source-path>
 ```
 
-The runner creates an isolated home and the integration tests block unexpected network access. Install test-only dependencies into a separate test directory/environment if needed; `--test-deps <directory>` can supply them. Do not print production environment variables when debugging a failed test.
+The runner creates an isolated home and the integration tests block unexpected network access. Resolve the live interpreter and selected dependency environment first; a managed Hermes launcher can use a different interpreter from the checkout's old `venv/`. Use the selected environment's Python so the runner's subprocess inherits the correct dependencies. Install test-only dependencies into a separate directory/environment for that same Python version if needed; `--test-deps <directory>` can supply them. Do not print production environment variables when debugging a failed test.
 
 Validate a sample card with `hermes teams-post ... --validate-only` in the selected configured context. This validates JSON; it does not establish visual Teams rendering or network access.
 

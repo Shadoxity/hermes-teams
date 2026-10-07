@@ -18,7 +18,7 @@ hermes --profile <profile-name> plugins install https://github.com/Shadoxity/her
 
 Replace `<profile-name>` with the selected profile. Public repositories can use anonymous HTTPS. For a private repository, establish deployment-approved read access first; the installer also accepts `git@github.com:Shadoxity/hermes-teams.git`. A repository-scoped read-only deploy key is suitable. Keep private keys and tokens outside the repository and Git remote URL, and verify access as the user that will perform updates. Do not transfer an administrator's credentials to the runtime.
 
-`--no-enable` leaves the initial cutover to the configuration steps below. `--no-deps` leaves dependency installation to the selected runtime's environment manager; it does not make dependencies optional. The installer refuses an existing destination by default: preserve and inspect any previous installation before replacing it.
+Check the selected runtime's `hermes plugins install --help` and `hermes plugins update --help`; installer behavior varies between Hermes versions. `--no-enable` avoids requesting immediate activation during the initial installation. `--no-deps` stages the plugin without preparing its dependencies; it does not make dependencies optional. On managed-runtime versions it also leaves the plugin disabled and cannot replace an active plugin. Those versions may offer `--yes-deps` for already-authorized dependency preparation in a noninteractive install; use it only when listed in that runtime's help, and never combine it with `--no-deps`. The installer refuses an existing destination by default: preserve and inspect any previous installation before replacing it.
 
 The installed directory contains the repository's runtime modules and bundled skills, including:
 
@@ -42,9 +42,9 @@ The `upstream/` directory contains reference snapshots, not the package to insta
 
 For an immutable installation, add `--ref <full-40-character-commit-SHA>` to the install command. This records a pin: `hermes plugins update` will refuse to advance it. Move a pin deliberately using the install command with `--force --ref <new-full-40-character-commit-SHA>` after backing up and reviewing the new revision. Branch names and tags are not accepted by `--ref`.
 
-A release-directory symlink can still be used for loading when supported by the host. However, Hermes's native updater rejects a plugin symlink whose resolved target is outside the profile's `plugins/` directory. Such deployments need their own reviewed release/symlink update procedure; they are not managed by the update command below. A copied archive without `.git` also cannot use native Git updates.
+A release-directory symlink can still be used for loading when supported by the host. However, Hermes's native updater rejects a plugin symlink whose resolved target is outside the profile's `plugins/` directory. Such deployments need their own reviewed release/symlink update procedure; they are not managed by the update command below. A manually copied archive without Git/install provenance also cannot use native Git updates.
 
-Install dependencies into the **same Python environment used by that profile's Hermes gateway**. The tested and pinned SDK is `microsoft-teams-apps==2.0.13.4`, with compatible `aiohttp` and `httpx` dependencies from `pyproject.toml`. Follow that runtime's environment manager and check compatibility before changing dependencies. Python 3.11 or later is required.
+Prepare dependencies through the **environment manager used by that profile's Hermes gateway**. The tested and pinned SDK is `microsoft-teams-apps==2.0.13.4`, with compatible `aiohttp` and `httpx` dependencies from `pyproject.toml`. Managed-runtime versions admit plugin dependencies and configuration together; do not install into an obsolete in-checkout venv or modify a committed dependency generation by hand. Determine the live runtime and its selected dependency environment before testing. Python 3.11 or later is required.
 
 Enable the custom plugin using Hermes's **`in_process` plugin execution mode**. The platform adapter and its gateway integration must run in the gateway process. Disable the bundled plugin by its manifest name **`teams-platform`** in that profile's plugin configuration. Its source directory is `platforms/teams`, which is not the canonical disable key. Keep the platform configuration key **`platforms.teams`** enabled; changing that key to `hermes-teams` would break existing routing and configuration.
 
@@ -193,13 +193,26 @@ Verify the selected adapter, profile identity, actual endpoint, and every shared
 
 ## Update from the repository
 
-Updates are explicit; installing the plugin does not create a scheduler, and updating Hermes core does not update this external plugin. For an unpinned checkout tracking `origin/main`, first retain the current commit/configuration and inspect local changes. Keep deployment settings outside the checkout. Then run the selected runtime's command as the deployment user:
+This guide configures explicit updates; it creates no scheduler and does not enable Hermes's optional automatic-update settings. Do not assume a core Hermes upgrade also advances this plugin. For an unpinned checkout tracking `origin/main`, first retain the current commit/configuration, inspect local changes, and review/test the proposed revision in isolation. Keep deployment settings outside the checkout. Then run the selected runtime's command as the deployment user:
 
 ```console
 hermes --profile <profile-name> plugins update hermes-teams
 ```
 
-The updater uses the checkout's Git remote and branch upstream, not the repository URL in `plugin.yaml`. It pulls with `--ff-only`, records the new revision when install metadata exists, scans the updated code, clears stale bytecode, and installs declared dependencies. Local edits are automatically stashed and may be reapplied or left in a stash if they conflict; inspect the result rather than assuming those edits survived unchanged. Dependency failures can be warnings, so a completed command alone is not a compatibility check. Initial installation with `--no-deps` does not suppress dependency handling during a later update.
+For this repository, updates use recorded Git provenance and the checkout's remote/upstream, not a manifest homepage. Both inspected updater generations use `--ff-only`, scanning, source metadata, and dependency handling, but their publication rules differ:
+
+- Earlier updaters pull into the installed checkout. Caution findings are warnings; a dangerous scan can disable the plugin. Dependency failures can also be warnings. Local edits may be reapplied or left in Git stash if they conflict.
+- Transactional updaters prepare a copy and admit its code and managed dependencies together. They can block a **caution** scan without offering an update-time acceptance prompt, leaving the installed tree unchanged. Newly declared dependencies can require separate interactive consent. A no-change update may still encounter the scan gate.
+
+If a transactional updater blocks reviewed caution findings, use its supported reinstall path **after reviewing the complete scan, checking the candidate revision, and retaining the rollback backup**. Confirm `--yes-deps` appears in install help, then run:
+
+```console
+hermes --profile <profile-name> plugins install <recorded-source-URL> --force --yes-deps --no-enable
+```
+
+Use the same recorded source URL; for a new HTTPS installation it is `https://github.com/Shadoxity/hermes-teams.git`. `--force` accepts caution findings and permits replacement; it does not override dangerous findings. Keep scanning enabled. `--yes-deps` supplies the authorized dependency answer on versions that support it; omit that flag on older versions and follow their dependency workflow. On an active transactional replacement, `--no-enable` preserves its existing selection while avoiding the install command's immediate activation request; it is not a command to disable the plugin. Preserve local changes separately and verify the resulting commit. Pinned installations still need an explicit new `--ref`.
+
+Initial `--no-deps` does not suppress dependency checks on a later update. Inspect command results, scanner findings, dependency outcomes, and enabled state rather than treating a completed command alone as proof of compatibility.
 
 Before activating the updated code, verify the installed commit and plugin enabled state, review dependency/scan results, and run the isolated compatibility suite from the plugin root:
 
@@ -207,7 +220,7 @@ Before activating the updated code, verify the installed commit and plugin enabl
 <Hermes-runtime-python> scripts/test_with_hermes.py --hermes-source <Hermes-source-path>
 ```
 
-Only after those checks pass, reload the existing gateway through its verified service lifecycle and confirm every shared profile reconnects. The plugin update command does not reload the gateway. Keep the previous revision and protected configuration backup available for rollback; verify the intended Teams workflow separately when live testing is authorized.
+Only after those checks pass, apply the existing gateway's verified service lifecycle and confirm every shared profile reconnects. Activation behavior varies: some install/enable/dashboard paths notify a running gateway automatically, while others need a service reload. Do not use immediate-enable actions before preflight, and inspect the selected runtime rather than assuming every plugin command waits for a manual restart. Keep the previous revision and protected configuration backup available for rollback; verify the intended Teams workflow separately when live testing is authorized.
 
 ## Diagnose missing inbound messages
 
