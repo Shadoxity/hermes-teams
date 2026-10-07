@@ -64,6 +64,28 @@ Preserve all existing unrelated entries. `teams-platform` is the bundled manifes
 
 For an existing profile, preserve its sender authorization. For a new profile, explicitly configure `TEAMS_ALLOWED_USERS` with the operator-approved users' Entra/AAD object IDs, or complete the installed Hermes version's supported pairing workflow before the channel test. For example, keep `TEAMS_ALLOWED_USERS=<approved-user-object-id>,<another-approved-user-object-id>` in the selected profile's protected configuration, replacing every placeholder. The adapter prefers the sender's AAD object ID. An empty new-profile allowlist does not mean all channel users are authorized. Do not enable all users merely to bypass a pairing/allowlist failure. Mention gating and sender authorization are separate checks.
 
+### Card skill discovery
+
+Keep the repository's `skills/` directory in the installed release. The plugin registers `hermes-teams:teams-cards` through Hermes's supported skill API; no skill files need to be copied into Hermes source. After the normal plugin reload/restart, verify with these agent tool calls:
+
+```text
+skills_list(category="plugin")
+skill_view(name="hermes-teams:teams-cards")
+skill_view(name="hermes-teams:teams-cards", file_path="references/layout-recipes.md")
+```
+
+The first call should list the skill; the others should return its instructions and recipes. Incoming Teams messages prompt agents to consult it when composing cards. Registered plugin skills are available through these tools but are not included in Hermes's automatic system-prompt skill index.
+
+If the operator wants automatic discovery from other channels or the CLI, optionally merge the installed skill directory into the selected profile's configuration, preserving existing entries:
+
+```yaml
+skills:
+  external_dirs:
+    - /absolute/path/to/installed/hermes-teams/skills
+```
+
+Replace that path with the discovered installation path, preferably its stable release link. This adds the filesystem name `teams-cards` to the general skill index while the qualified plugin name remains available. Do not also copy the same skill into the profile's skills directory. Apply the normal service restart and use a fresh conversation to refresh the system index. `/reload-skills` can rescan filesystem skills and inform the next turn, but it does not reload plugin Python or replace an existing system prompt. See [Hermes skill guidance](https://hermes-agent.nousresearch.com/docs/guides/work-with-skills/).
+
 ## 4. Provision or verify Microsoft resources
 
 Follow [NEW_BOT.md](NEW_BOT.md) using the agreed tenant and identity. Keep Entra client ID, Entra object ID, Teams manifest ID, and catalog ID distinct. The complete tested setup uses one bot/Graph identity, explicitly approved application `Sites.ReadWrite.All`, and installed-team `ChannelMessage.Read.Group`. Obtain actual administrator consent and verify the result. Selected-site access is an advanced deployment requiring additional channel-folder discovery authorization; the current package builder does not complete that setup. If the operator selects restricted access, resolve and verify that route before activating file features rather than silently broadening permissions.

@@ -234,6 +234,7 @@ async def test_inbound_channel_reference_reaches_real_media_cache_and_event(adap
     assert kwargs == {"team_id": TEAM, "channel_id": CHANNEL}
     assert adapter._file_target(THREAD) == ChannelTarget(TEAM, CHANNEL)
     assert "teams_files" in event.channel_prompt
+    assert "skill_view" in event.channel_prompt and "hermes-teams:teams-cards" in event.channel_prompt
 
 
 @pytest.mark.asyncio
@@ -645,6 +646,29 @@ try:
         schema = tool_registry.get_schema(tool_name)
         assert schema.get("function", schema)["name"] == tool_name
     assert "teams-post" in get_plugin_manager()._cli_commands
+    from tools.skills_tool import skills_list, skill_view
+    skill_name = "hermes-teams:teams-cards"
+    skill_root = Path(os.environ["PLUGIN_EXPECTED_ROOT"]).resolve() / "skills" / "teams-cards"
+    registered_skill = get_plugin_manager().find_plugin_skill(skill_name)
+    assert registered_skill is not None, "The installed plugin did not register its card skill"
+    assert registered_skill.resolve() == skill_root / "SKILL.md"
+    for category in (None, "plugin"):
+        listing = json.loads(skills_list(category=category))
+        assert listing["success"], listing
+        matches = [item for item in listing["skills"] if item["name"] == skill_name]
+        assert len(matches) == 1 and matches[0]["category"] == "plugin", matches
+        assert matches[0]["description"].strip()
+    viewed = json.loads(skill_view(name=skill_name, preprocess=False))
+    assert viewed["success"] and viewed["name"] == skill_name, viewed
+    assert viewed["content"].endswith(registered_skill.read_text(encoding="utf-8-sig"))
+    references = {name.replace("\\", "/") for name in viewed["linked_files"]["references"]}
+    for reference in ("references/layout-recipes.md", "references/tool-reference.md"):
+        assert reference in references, references
+        loaded = json.loads(skill_view(name=skill_name, file_path=reference))
+        assert loaded["success"] and loaded["name"] == skill_name, loaded
+        assert loaded["file"] == reference
+        assert Path(loaded["_source_path"]).resolve() == skill_root / reference
+        assert loaded["content"] == (skill_root / reference).read_text(encoding="utf-8-sig")
     print("HERMES_TEAMS_DISCOVERY_OK")
 finally:
     reset_hermes_home_override(handle)

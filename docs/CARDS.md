@@ -1,5 +1,7 @@
 # Structured Teams cards
 
+For agent composition and delivery workflows, load the bundled [Teams cards skill](../skills/teams-cards/SKILL.md) with `skill_view(name="hermes-teams:teams-cards")`. It includes layout recipes, field limits, thread routing, and recovery from partial file delivery. This page describes the renderer.
+
 `teams_post` and `hermes teams-post` accept the same structured post object. The renderer uses three distinct layouts without exposing arbitrary Adaptive Card JSON to the caller:
 
 | Template | Layout | Use |

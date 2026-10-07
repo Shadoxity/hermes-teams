@@ -24,6 +24,12 @@ For manual setup, follow [Hermes installation](docs/INSTALL.md) and [Teams/Azure
 
 See [card examples and formatting](docs/CARDS.md), [implementation boundaries](docs/IMPLEMENTATION.md), and [validation](docs/VALIDATION.md). Automated tests and successful individual live operations do not establish every complete agent workflow or client presentation.
 
+## Card skill for agents
+
+The bundled [Teams cards skill](skills/teams-cards/SKILL.md) teaches agents when to use each layout, how to write concise content, and how to deliver files without duplicate notifications. Its supporting references contain [layout recipes](skills/teams-cards/references/layout-recipes.md) and the [tool contract and recovery steps](skills/teams-cards/references/tool-reference.md).
+
+Enabling this plugin registers `hermes-teams:teams-cards` with Hermes. Agents can load it using `skill_view(name="hermes-teams:teams-cards")`; incoming Teams messages include a reminder to consult it when composing cards. Ask, for example: “Use the Teams cards skill to draft a weekly report from these findings.” A draft request does not publish a message. See the [installation guide](docs/AGENT_INSTALL.md#card-skill-discovery) for verification and optional automatic indexing outside Teams.
+
 ## Tools
 
 `teams_post` accepts a `chat_id`, a structured `post`, and optional `reply_to`. The post requires `template` (`report`, `status`, or `document`) and `title`; optional fields include `summary`, `status`, `facts`, `sections`, and `actions`. See [report](examples/report.json), [status](examples/status.json), and [document](examples/document.json) inputs.
