@@ -1,0 +1,12 @@
+{
+  "body": "## What does this PR do?\n\nMicrosoft Teams **reply streaming**: progressive Bot Framework activity updates (`conversations.activities.update` / REST `PUT`), using the gateway's send-then-edit consumer (same shape as Discord/Telegram).\n\n**Stacked on** files + reactions — please merge in order:\n\n1. https://github.com/NousResearch/hermes-agent/pull/118102 (reactions)\n2. https://github.com/NousResearch/hermes-agent/pull/118103 (files)\n3. **this PR**\n\nUntil those land, the diff vs `main` includes the full Teams stack. Fork source: https://github.com/tournierjc/hermes-agent/pull/4\n\n### Behavior\n\n- First tokens → new activity; mid-stream → `edit_message(finalize=False)`; final → `finalize=True`\n- Flat conversation ids (strip `;messageid=`) before update/delete/react\n- Skip identical mid-stream edits; coalesce/rate-limit friendly (short HTTP 429 wait); 404/405 → fall back to a single non-streaming send\n- `draft_stream_is_message` stays **False** (no native Teams stream object)\n\n### Enable\n\n```yaml\nstreaming:\n  enabled: true\n  transport: auto\n```\n\nOptional: `display.platforms.teams.streaming: true|false`\n\n## Type of Change\n\n- [x] ✨ New feature\n- [x] 📝 Documentation\n- [x] ✅ Tests\n\n## How to Test\n\n```bash\nscripts/run_tests.sh tests/gateway/test_teams.py tests/plugins/platforms/test_teams_graph_files.py\n```\n\nLive: set `streaming.enabled: true`, ask a longer question in Teams — the bubble should grow in place.\n\n## Checklist\n\n- [x] Conventional Commits\n- [x] Depends on reactions (#118102) then files (#118103)\n- [x] Streaming-only scope on top of that stack\n- [x] Docs updated (replaces “Streaming (not yet)”)",
+  "title": "feat(teams): stream replies via Bot Framework activity updates",
+  "state": "open",
+  "author": "tournierjc",
+  "merged": false,
+  "retrieved_at": "2026-10-07T10:48:03.1778909Z",
+  "url": "https://github.com/NousResearch/hermes-agent/pull/118127",
+  "base_sha": "0087827510b6a184d512c90b08d4566fcf68b346",
+  "head_sha": "6aef09afe1bb6f91f49d49e2431fadea8c020abb",
+  "number": 118127
+}

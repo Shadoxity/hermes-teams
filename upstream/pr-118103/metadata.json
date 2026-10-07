@@ -1,0 +1,12 @@
+{
+  "body": "## What does this PR do?\n\nMicrosoft Teams **file send/receive**: personal DM FileConsent plus Graph/SharePoint upload and inbound attachment fetch for channel/group chats.\n\n**Stacked on** https://github.com/NousResearch/hermes-agent/pull/118102 — please **merge reactions first**. Until then, this diff vs `main` includes both commits; after reactions lands, only the files delta remains.\n\nFork source: https://github.com/tournierjc/hermes-agent/pull/2\n\n### Files (outbound)\n\n- **Personal (1:1):** FileConsentCard → OneDrive PUT → FileInfoCard (no Graph required).\n- **Channel/group — small text:** inlined as a normal message.\n- **Channel/group — binary:** app-only Graph upload into conversation `filesFolder`, then a SharePoint/`webUrl` link in the same chat. **No** channel base64 attachments (those 400).\n\n### Files (inbound)\n\nWhen Bot Framework only sends caption + unnamed `text/html`, Hermes GETs the Graph channel/chat message and downloads SharePoint attachments. Personal chats keep `file.download.info` / FileConsent.\n\n### Graph setup\n\n`MSGRAPH_*` (or same Entra app as `TEAMS_*`) with admin consent for:\n\n- `Files.ReadWrite.All`\n- `ChannelMessage.Read.Group` (RSC) or `ChannelMessage.Read.All`\n- `ChatMessage.Read.Chat` (RSC) or `Chat.Read.All`\n\nSee Teams messaging docs + microsoft-graph-app-registration guide in-tree.\n\n### Also\n\n- Observe-unmentioned channel context (RSC)\n- FileConsent Accept enum fix + card dismiss\n\n## Type of Change\n\n- [x] ✨ New feature\n- [x] 📝 Documentation\n- [x] ✅ Tests\n\n## How to Test\n\n\n\nLive (with Graph consented): attach a file in a channel @mention; ask the bot to send a `.docx` and expect a SharePoint link.\n\n## Checklist\n\n- [x] Conventional Commits\n- [x] Depends on reactions PR\n- [x] Tests + docs for Graph permissions",
+  "title": "feat(teams): FileConsent and Graph SharePoint channel files",
+  "state": "open",
+  "author": "tournierjc",
+  "merged": false,
+  "retrieved_at": "2026-10-07T10:47:56.0243464Z",
+  "url": "https://github.com/NousResearch/hermes-agent/pull/118103",
+  "base_sha": "0087827510b6a184d512c90b08d4566fcf68b346",
+  "head_sha": "bf5cbbad7e6956ae7024e808684ebe549a1320df",
+  "number": 118103
+}

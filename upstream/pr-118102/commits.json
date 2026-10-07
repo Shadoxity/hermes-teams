@@ -1,0 +1,84 @@
+[
+  {
+    "sha": "079bb5dd59b361fc618e1ff31ed1d36b96f3704e",
+    "node_id": "C_kwDOUiW-xdoAKDA3OWJiNWRkNTliMzYxZmM2MThlMWZmMzFlZDFkMzZiOTZmMzcwNGU",
+    "commit": {
+      "author": {
+        "name": "Cursor Agent",
+        "email": "cursoragent@cursor.com",
+        "date": "2026-09-21T10:20:14Z"
+      },
+      "committer": {
+        "name": "Cursor Agent",
+        "email": "cursoragent@cursor.com",
+        "date": "2026-09-21T10:20:14Z"
+      },
+      "message": "feat(teams): inbound/outbound emoji reactions\n\nAdd and remove Teams reactions through the Bot Framework connector\n(SDK ReactionClient with REST fallback). Processing-status 👀/✅/❌\nare gated by TEAMS_REACTIONS; send_message react/unreact is always on.\nForward inbound messageReaction events to gateway reaction hooks.\n\nSplit from the combined files+reactions branch so files/Graph can land\nas a stacked follow-up.\n\nCo-authored-by: tournierjc <tournierjc@users.noreply.github.com>",
+      "tree": {
+        "sha": "15ceb3e28ba1e99c16c9d21742005a8f6908625f",
+        "url": "https://api.github.com/repos/NousResearch/hermes-agent/git/trees/15ceb3e28ba1e99c16c9d21742005a8f6908625f"
+      },
+      "url": "https://api.github.com/repos/NousResearch/hermes-agent/git/commits/079bb5dd59b361fc618e1ff31ed1d36b96f3704e",
+      "comment_count": 0,
+      "verification": {
+        "verified": true,
+        "reason": "valid",
+        "signature": "-----BEGIN SSH SIGNATURE-----\nU1NIU0lHAAAAAQAAADMAAAALc3NoLWVkMjU1MTkAAAAg+qImwGMCy/grKZ50VxRHz3VfWW\nAL3QNbzIy2Nwcn+nQAAAADZ2l0AAAAAAAAAAZzaGE1MTIAAABTAAAAC3NzaC1lZDI1NTE5\nAAAAQJBU1Ukbv/1k3YKOrUIYtITsv60vFfRZtWlnA7MdzDAwaezjBrY/EmNC+96ZW83+iD\nD8RuqcGJr1TsdIpEvdXwc=\n-----END SSH SIGNATURE-----",
+        "payload": "tree 15ceb3e28ba1e99c16c9d21742005a8f6908625f\nparent 490e6b5966de330285905f52ebaee23c842dc3ea\nauthor Cursor Agent <cursoragent@cursor.com> 1789986014 +0000\ncommitter Cursor Agent <cursoragent@cursor.com> 1789986014 +0000\n\nfeat(teams): inbound/outbound emoji reactions\n\nAdd and remove Teams reactions through the Bot Framework connector\n(SDK ReactionClient with REST fallback). Processing-status 👀/✅/❌\nare gated by TEAMS_REACTIONS; send_message react/unreact is always on.\nForward inbound messageReaction events to gateway reaction hooks.\n\nSplit from the combined files+reactions branch so files/Graph can land\nas a stacked follow-up.\n\nCo-authored-by: tournierjc <tournierjc@users.noreply.github.com>\n",
+        "verified_at": "2026-09-21T10:20:20Z"
+      }
+    },
+    "url": "https://api.github.com/repos/NousResearch/hermes-agent/commits/079bb5dd59b361fc618e1ff31ed1d36b96f3704e",
+    "html_url": "https://github.com/NousResearch/hermes-agent/commit/079bb5dd59b361fc618e1ff31ed1d36b96f3704e",
+    "comments_url": "https://api.github.com/repos/NousResearch/hermes-agent/commits/079bb5dd59b361fc618e1ff31ed1d36b96f3704e/comments",
+    "author": {
+      "login": "cursoragent",
+      "id": 199161495,
+      "node_id": "U_kgDOC972lw",
+      "avatar_url": "https://avatars.githubusercontent.com/u/199161495?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/cursoragent",
+      "html_url": "https://github.com/cursoragent",
+      "followers_url": "https://api.github.com/users/cursoragent/followers",
+      "following_url": "https://api.github.com/users/cursoragent/following{/other_user}",
+      "gists_url": "https://api.github.com/users/cursoragent/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/cursoragent/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/cursoragent/subscriptions",
+      "organizations_url": "https://api.github.com/users/cursoragent/orgs",
+      "repos_url": "https://api.github.com/users/cursoragent/repos",
+      "events_url": "https://api.github.com/users/cursoragent/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/cursoragent/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "committer": {
+      "login": "cursoragent",
+      "id": 199161495,
+      "node_id": "U_kgDOC972lw",
+      "avatar_url": "https://avatars.githubusercontent.com/u/199161495?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/cursoragent",
+      "html_url": "https://github.com/cursoragent",
+      "followers_url": "https://api.github.com/users/cursoragent/followers",
+      "following_url": "https://api.github.com/users/cursoragent/following{/other_user}",
+      "gists_url": "https://api.github.com/users/cursoragent/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/cursoragent/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/cursoragent/subscriptions",
+      "organizations_url": "https://api.github.com/users/cursoragent/orgs",
+      "repos_url": "https://api.github.com/users/cursoragent/repos",
+      "events_url": "https://api.github.com/users/cursoragent/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/cursoragent/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "parents": [
+      {
+        "sha": "490e6b5966de330285905f52ebaee23c842dc3ea",
+        "url": "https://api.github.com/repos/NousResearch/hermes-agent/commits/490e6b5966de330285905f52ebaee23c842dc3ea",
+        "html_url": "https://github.com/NousResearch/hermes-agent/commit/490e6b5966de330285905f52ebaee23c842dc3ea"
+      }
+    ]
+  }
+]

@@ -1,0 +1,12 @@
+{
+  "body": "## What does this PR do?\n\nAdd Microsoft Teams **emoji reactions** (inbound + outbound / processing-lifecycle 👀✅❌) without the files/Graph work.\n\n**Companion (files + Graph, stacked — merge this first):** will link in a follow-up comment / see related PR from the same fork.\n\nFork source: https://github.com/tournierjc/hermes-agent/pull/3\n\n### Reactions\n\n- **Processing status** (default on; `TEAMS_REACTIONS=false` or `extra.reactions: false` to disable): 👀 while the agent works, then ✅ on success or ❌ on failure.\n- **Agent-facing** `send_message` `action=\"react\"` / `\"unreact\"`: not gated by `TEAMS_REACTIONS`. Unicode and Teams reaction ids both work.\n- Inbound `messageReaction` activities → gateway hooks (`reaction:added` / `reaction:removed`). The bot ignores its own reactions.\n- SDK `api.reactions.add` / `delete` with Bot Framework REST fallback.\n\nThis PR does **not** include FileConsent, Graph uploads, or `MSGRAPH_*`.\n\n## Type of Change\n\n- [x] ✨ New feature\n- [x] 📝 Documentation update\n- [x] ✅ Tests\n\n## How to Test\n\n```bash\nscripts/run_tests.sh tests/gateway/test_teams.py -k 'reaction or Reaction'\n```\n\nLive: react/unreact from the agent; confirm processing 👀 then ✅/❌.\n\n## Checklist\n\n- [x] Conventional Commits\n- [x] Reaction-only scope\n- [x] Tests + docs",
+  "title": "feat(teams): inbound/outbound emoji reactions",
+  "state": "open",
+  "author": "tournierjc",
+  "merged": false,
+  "retrieved_at": "2026-10-07T10:47:50.1130702Z",
+  "url": "https://github.com/NousResearch/hermes-agent/pull/118102",
+  "base_sha": "db1f3f4564eb0f1a4b75744064057f07d9a5c6e5",
+  "head_sha": "079bb5dd59b361fc618e1ff31ed1d36b96f3704e",
+  "number": 118102
+}

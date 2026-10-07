@@ -1,0 +1,25 @@
+.env
+.env.*
+!.env.example
+__pycache__/
+*.py[cod]
+.pytest_cache/
+pytest-of-*/
+.venv/
+.test-deps/
+.test-home/
+*.egg-info/
+dist/
+build/
+.coverage
+htmlcov/
+work/
+.DS_Store
+# Keep deployment outputs and runtime state outside the source distribution.
+*.zip
+*.log
+/deployment/
+/private/
+/plugin-data/
+/outputs/
+/config.yaml

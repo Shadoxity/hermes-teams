@@ -1,0 +1,28 @@
+name: hermes-teams
+label: Hermes Teams
+kind: platform
+version: 0.1.0
+description: >-
+  External Microsoft Teams adapter for Hermes, with channel file transfers,
+  streaming, reactions, and structured Adaptive Card posts.
+author: Hermes Teams contributors; derived from NousResearch Hermes Agent contributors
+requires_env:
+  - name: TEAMS_CLIENT_ID
+    description: Microsoft Teams bot application ID
+    password: false
+  - name: TEAMS_CLIENT_SECRET
+    description: Microsoft Teams bot client secret
+    password: true
+  - name: TEAMS_TENANT_ID
+    description: Microsoft tenant ID
+    password: false
+optional_env:
+  - name: MSGRAPH_CLIENT_ID
+    description: Optional separate Graph application ID for file access
+    password: false
+  - name: MSGRAPH_CLIENT_SECRET
+    description: Optional separate Graph client secret for file access
+    password: true
+  - name: MSGRAPH_TENANT_ID
+    description: Optional separate Graph tenant ID
+    password: false

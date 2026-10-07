@@ -1,0 +1,13 @@
+Hermes Teams
+
+Derived from the Microsoft Teams platform plugin in NousResearch/hermes-agent
+(https://github.com/NousResearch/hermes-agent), copyright 2025 Nous Research,
+distributed under the MIT license reproduced in LICENSE.
+
+Includes adaptations of the reactions, file-transfer, and streaming proposals
+in upstream pull requests 118102, 118103, and 118127 by tournierjc and other
+Hermes contributors. See upstream/ and docs/PORTING.md for pinned commits,
+source snapshots, patch metadata, and the changes made during the port.
+
+Additional integration, structured cards, validation, and documentation:
+Copyright (c) 2026 Hermes Teams contributors. Distributed under the same MIT license.

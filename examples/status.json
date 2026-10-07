@@ -1,0 +1,17 @@
+{
+  "template": "status",
+  "title": "Project progress",
+  "summary": "Example update: the draft is ready and the review is in progress.",
+  "status": "In progress",
+  "facts": [
+    {"label": "Owner", "value": "Project team"},
+    {"label": "Current step", "value": "Review"},
+    {"label": "Next milestone", "value": "Approve the final draft"}
+  ],
+  "sections": [
+    {"title": "Action needed", "text": "Add review comments and identify any missing information."}
+  ],
+  "actions": [
+    {"label": "Review example draft", "url": "https://example.com/reports/sample.pdf"}
+  ]
+}

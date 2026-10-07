@@ -1,0 +1,6 @@
+{
+  "repository": "NousResearch/hermes-agent",
+  "retrieved_at": "2026-10-07T10:47:46.8308407Z",
+  "purpose": "Pinned Hermes source revision used for baseline compatibility and porting.",
+  "commit": "9dcab1e440cdc482320af002e44036b947d6d709"
+}

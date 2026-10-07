@@ -1,0 +1,142 @@
+[
+  {
+    "path": "upstream/base/LICENSE",
+    "sha256": "821556e6336796450ab852d375117b48a4887e71d255794fd6318d99982a5ab6"
+  },
+  {
+    "path": "upstream/base/metadata.json",
+    "sha256": "46c2fbfd226b026aee167e34bd34982bf5344e6ef6b536604176ef6166548ef9"
+  },
+  {
+    "path": "upstream/base/plugins/platforms/teams/__init__.py",
+    "sha256": "1792e361eab0aea87bc38b61e2e200f55b885fcaf0ae1897d332d3bdffa722e6"
+  },
+  {
+    "path": "upstream/base/plugins/platforms/teams/adapter.py",
+    "sha256": "3d6408c717039fe7767fdebb5ad81a0a0bbe26bf15d1904c580a3fa096d08893"
+  },
+  {
+    "path": "upstream/base/plugins/platforms/teams/plugin.yaml",
+    "sha256": "6eceacbeec8aadb37e16229e49a923d06eb9b0f1a5d137bdcb6c25f5ab1f2715"
+  },
+  {
+    "path": "upstream/base/plugins/platforms/teams/summary_writer.py",
+    "sha256": "697bc20c1665042b96abe9896f987275f2aa2798c8461d12da794c6d7d6b37db"
+  },
+  {
+    "path": "upstream/base/tests/gateway/test_teams.py",
+    "sha256": "3ff43110f0ef2de19de4d77656e8d1f5d2f8b2a0689649547813e3c60f33fdf5"
+  },
+  {
+    "path": "upstream/base/website/docs/user-guide/messaging/teams.md",
+    "sha256": "514662569516e0f2ea91138fe59a8dac5485ae151a805ca8aceeea26e16193ee"
+  },
+  {
+    "path": "upstream/pr-118102/commits.json",
+    "sha256": "2663221428c517bf507a07a67835eb1389f19531b8a82a678a81e8b7dea831d2"
+  },
+  {
+    "path": "upstream/pr-118102/diff.patch",
+    "sha256": "01b23a7de5c88b40f8c9538556bde5454ad4e34b6d7b6f3b3b812b6f23305e54"
+  },
+  {
+    "path": "upstream/pr-118102/files.json",
+    "sha256": "6662621c02bfaf813adc4c39c0395ac6940e77abc6a213a41373054a7ad0b5f1"
+  },
+  {
+    "path": "upstream/pr-118102/metadata.json",
+    "sha256": "e42c15ba35f405c69e48eee62dc47ac6df7e13e1979b31d4312d861a259ebf18"
+  },
+  {
+    "path": "upstream/pr-118102/plugins/platforms/teams/adapter.py",
+    "sha256": "70dc4cf3965fa41fa6263ff55d5c0f74ba204bf3392a69c9252ce2fb0e5761b8"
+  },
+  {
+    "path": "upstream/pr-118102/plugins/platforms/teams/plugin.yaml",
+    "sha256": "a1d505f5037271a649bf7022b6a0056aeac7aefdf80b84f70523052de884c7e5"
+  },
+  {
+    "path": "upstream/pr-118102/tests/gateway/test_teams.py",
+    "sha256": "0fc08cedd6355d557a28aecd6347570415024d47b2d8c4d7aa5b421ec1df5fbc"
+  },
+  {
+    "path": "upstream/pr-118103/commits.json",
+    "sha256": "eebb31bc3775e3e48160ade85db1a84b97fcba0cc75106def089b0c00f2a5eaa"
+  },
+  {
+    "path": "upstream/pr-118103/diff.patch",
+    "sha256": "3b6728c86a5de570bb6f162ae8f5f0f4448b1e452c83d76f46706f96a8ebfa7f"
+  },
+  {
+    "path": "upstream/pr-118103/files.json",
+    "sha256": "f97cd7dcddd2d0ed652c3b47424d3d3789e6f7350050fd0cedc549227ac7d402"
+  },
+  {
+    "path": "upstream/pr-118103/metadata.json",
+    "sha256": "13788d03c5686dbd58e2437d169f049f526eda711963f931b79567a2ac3bc97f"
+  },
+  {
+    "path": "upstream/pr-118103/plugins/platforms/teams/adapter.py",
+    "sha256": "80d44d2a5fc5fb8c564473f0b59aca99a38f5d85f2978b5b8979e9fa791a4c06"
+  },
+  {
+    "path": "upstream/pr-118103/plugins/platforms/teams/graph_files.py",
+    "sha256": "67823a3054da00e2cb32eb43aae6a448b556eb7382c87472ed0c268304cdaf99"
+  },
+  {
+    "path": "upstream/pr-118103/plugins/platforms/teams/manifest.template.json",
+    "sha256": "de16e1476fb7a83938687b41f488e4b7ca95c299dabda50083eefc9472658a30"
+  },
+  {
+    "path": "upstream/pr-118103/plugins/platforms/teams/plugin.yaml",
+    "sha256": "1b221ea782d9a981bb0552ec59972fc452ed3e60d3f252970dcb62d5360dc214"
+  },
+  {
+    "path": "upstream/pr-118103/tests/gateway/test_teams.py",
+    "sha256": "28c5850fb7ca8e8d199565832a47f9c2e99cc54ca72a2a4909441fd78a94ab0c"
+  },
+  {
+    "path": "upstream/pr-118103/tests/plugins/platforms/test_teams_graph_files.py",
+    "sha256": "b21bb14e0b2858f3177b6a96d57ebaa0e5ddc14e03272d0639fa63314e54dcee"
+  },
+  {
+    "path": "upstream/pr-118127/commits.json",
+    "sha256": "33f3637b0ce2e0309e289ca5a96eb1e63b3bce6d628b16588557ccc2fe63edc4"
+  },
+  {
+    "path": "upstream/pr-118127/diff.patch",
+    "sha256": "0951821c8e558f392c467ad3181681570f36d10bea31f519050f99b8a35f4a62"
+  },
+  {
+    "path": "upstream/pr-118127/files.json",
+    "sha256": "3edb3dabc5e4af46ad422db9aa34792e5a57fb4e1f06493785f46cc2ff84695d"
+  },
+  {
+    "path": "upstream/pr-118127/metadata.json",
+    "sha256": "2e8d8c9c9c40cd142e87f3af3fa414aae1d022e64580956f03e0b929cb1321d6"
+  },
+  {
+    "path": "upstream/pr-118127/plugins/platforms/teams/adapter.py",
+    "sha256": "5aec9fc69adf48eccb0012238d88250dfa7b795812a4df56b605d1acd604b378"
+  },
+  {
+    "path": "upstream/pr-118127/plugins/platforms/teams/graph_files.py",
+    "sha256": "67823a3054da00e2cb32eb43aae6a448b556eb7382c87472ed0c268304cdaf99"
+  },
+  {
+    "path": "upstream/pr-118127/plugins/platforms/teams/manifest.template.json",
+    "sha256": "de16e1476fb7a83938687b41f488e4b7ca95c299dabda50083eefc9472658a30"
+  },
+  {
+    "path": "upstream/pr-118127/plugins/platforms/teams/plugin.yaml",
+    "sha256": "46b44a6b52fbbffae3779f083ad604c9d7593134b887b6c4351ac910be7be6fb"
+  },
+  {
+    "path": "upstream/pr-118127/tests/gateway/test_teams.py",
+    "sha256": "5c16ac3b0f66c3ccc63b98d85e897cff4b6ff9d6a92ee48468603d1b7c219ada"
+  },
+  {
+    "path": "upstream/pr-118127/tests/plugins/platforms/test_teams_graph_files.py",
+    "sha256": "b21bb14e0b2858f3177b6a96d57ebaa0e5ddc14e03272d0639fa63314e54dcee"
+  }
+]

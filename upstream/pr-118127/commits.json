@@ -1,0 +1,248 @@
+[
+  {
+    "sha": "9861da5c0ff6a76ec399f3ad31e6e34ac6add35e",
+    "node_id": "C_kwDOUiW-xdoAKDk4NjFkYTVjMGZmNmE3NmVjMzk5ZjNhZDMxZTZlMzRhYzZhZGQzNWU",
+    "commit": {
+      "author": {
+        "name": "Cursor Agent",
+        "email": "cursoragent@cursor.com",
+        "date": "2026-09-21T10:20:14Z"
+      },
+      "committer": {
+        "name": "Cursor Agent",
+        "email": "cursoragent@cursor.com",
+        "date": "2026-09-23T21:10:18Z"
+      },
+      "message": "feat(teams): inbound/outbound emoji reactions\n\nAdd and remove Teams reactions through the Bot Framework connector\n(SDK ReactionClient with REST fallback). Processing-status 👀/✅/❌\nare gated by TEAMS_REACTIONS; send_message react/unreact is always on.\nForward inbound messageReaction events to gateway reaction hooks.\n\nSplit from the combined files+reactions branch so files/Graph can land\nas a stacked follow-up.\n\nCo-authored-by: tournierjc <tournierjc@users.noreply.github.com>",
+      "tree": {
+        "sha": "ee5762fe7df883a4fdbd08a6085dbcd20264be5d",
+        "url": "https://api.github.com/repos/NousResearch/hermes-agent/git/trees/ee5762fe7df883a4fdbd08a6085dbcd20264be5d"
+      },
+      "url": "https://api.github.com/repos/NousResearch/hermes-agent/git/commits/9861da5c0ff6a76ec399f3ad31e6e34ac6add35e",
+      "comment_count": 0,
+      "verification": {
+        "verified": true,
+        "reason": "valid",
+        "signature": "-----BEGIN SSH SIGNATURE-----\nU1NIU0lHAAAAAQAAADMAAAALc3NoLWVkMjU1MTkAAAAg+qImwGMCy/grKZ50VxRHz3VfWW\nAL3QNbzIy2Nwcn+nQAAAADZ2l0AAAAAAAAAAZzaGE1MTIAAABTAAAAC3NzaC1lZDI1NTE5\nAAAAQL+qgJMDFFC9oD8s0d63P+XijvajVnahjn4huwN35WbWGyTDC05UV1CHIyvTpc3K53\n/nAuCw2ZpI6EG4ek54oAs=\n-----END SSH SIGNATURE-----",
+        "payload": "tree ee5762fe7df883a4fdbd08a6085dbcd20264be5d\nparent 67f7e1d6b3115b8812caa58156c0f9b5531af072\nauthor Cursor Agent <cursoragent@cursor.com> 1789986014 +0000\ncommitter Cursor Agent <cursoragent@cursor.com> 1790197818 +0000\n\nfeat(teams): inbound/outbound emoji reactions\n\nAdd and remove Teams reactions through the Bot Framework connector\n(SDK ReactionClient with REST fallback). Processing-status 👀/✅/❌\nare gated by TEAMS_REACTIONS; send_message react/unreact is always on.\nForward inbound messageReaction events to gateway reaction hooks.\n\nSplit from the combined files+reactions branch so files/Graph can land\nas a stacked follow-up.\n\nCo-authored-by: tournierjc <tournierjc@users.noreply.github.com>\n",
+        "verified_at": "2026-09-23T21:11:42Z"
+      }
+    },
+    "url": "https://api.github.com/repos/NousResearch/hermes-agent/commits/9861da5c0ff6a76ec399f3ad31e6e34ac6add35e",
+    "html_url": "https://github.com/NousResearch/hermes-agent/commit/9861da5c0ff6a76ec399f3ad31e6e34ac6add35e",
+    "comments_url": "https://api.github.com/repos/NousResearch/hermes-agent/commits/9861da5c0ff6a76ec399f3ad31e6e34ac6add35e/comments",
+    "author": {
+      "login": "cursoragent",
+      "id": 199161495,
+      "node_id": "U_kgDOC972lw",
+      "avatar_url": "https://avatars.githubusercontent.com/u/199161495?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/cursoragent",
+      "html_url": "https://github.com/cursoragent",
+      "followers_url": "https://api.github.com/users/cursoragent/followers",
+      "following_url": "https://api.github.com/users/cursoragent/following{/other_user}",
+      "gists_url": "https://api.github.com/users/cursoragent/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/cursoragent/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/cursoragent/subscriptions",
+      "organizations_url": "https://api.github.com/users/cursoragent/orgs",
+      "repos_url": "https://api.github.com/users/cursoragent/repos",
+      "events_url": "https://api.github.com/users/cursoragent/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/cursoragent/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "committer": {
+      "login": "cursoragent",
+      "id": 199161495,
+      "node_id": "U_kgDOC972lw",
+      "avatar_url": "https://avatars.githubusercontent.com/u/199161495?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/cursoragent",
+      "html_url": "https://github.com/cursoragent",
+      "followers_url": "https://api.github.com/users/cursoragent/followers",
+      "following_url": "https://api.github.com/users/cursoragent/following{/other_user}",
+      "gists_url": "https://api.github.com/users/cursoragent/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/cursoragent/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/cursoragent/subscriptions",
+      "organizations_url": "https://api.github.com/users/cursoragent/orgs",
+      "repos_url": "https://api.github.com/users/cursoragent/repos",
+      "events_url": "https://api.github.com/users/cursoragent/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/cursoragent/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "parents": [
+      {
+        "sha": "67f7e1d6b3115b8812caa58156c0f9b5531af072",
+        "url": "https://api.github.com/repos/NousResearch/hermes-agent/commits/67f7e1d6b3115b8812caa58156c0f9b5531af072",
+        "html_url": "https://github.com/NousResearch/hermes-agent/commit/67f7e1d6b3115b8812caa58156c0f9b5531af072"
+      }
+    ]
+  },
+  {
+    "sha": "bf5cbbad7e6956ae7024e808684ebe549a1320df",
+    "node_id": "C_kwDOUiW-xdoAKGJmNWNiYmFkN2U2OTU2YWU3MDI0ZTgwODY4NGViZTU0OWExMzIwZGY",
+    "commit": {
+      "author": {
+        "name": "Cursor Agent",
+        "email": "cursoragent@cursor.com",
+        "date": "2026-09-21T10:20:45Z"
+      },
+      "committer": {
+        "name": "Cursor Agent",
+        "email": "cursoragent@cursor.com",
+        "date": "2026-09-23T21:11:21Z"
+      },
+      "message": "feat(teams): FileConsent and Graph SharePoint channel files\n\nPersonal 1:1 chats send/receive files via native FileConsent cards.\nChannel and group chats inline small text; other files upload to the\nconversation filesFolder through Microsoft Graph / SharePoint, then\npost a clickable link. Inbound HTML-only channel drops GET the Graph\nmessage and download SharePoint attachments.\n\nAlso stores unmentioned channel/group posts as observed context when\nRSC + require_mention are on (needed so inbound files and chatter\nshare the same message-read path).\n\nStacked on cursor/feat-teams-reactions-9eb4 so reaction review is not\nduplicated.\n\nCo-authored-by: tournierjc <tournierjc@users.noreply.github.com>",
+      "tree": {
+        "sha": "499e6a95e4ab730caaf6c13770b7f36e01c576a9",
+        "url": "https://api.github.com/repos/NousResearch/hermes-agent/git/trees/499e6a95e4ab730caaf6c13770b7f36e01c576a9"
+      },
+      "url": "https://api.github.com/repos/NousResearch/hermes-agent/git/commits/bf5cbbad7e6956ae7024e808684ebe549a1320df",
+      "comment_count": 0,
+      "verification": {
+        "verified": true,
+        "reason": "valid",
+        "signature": "-----BEGIN SSH SIGNATURE-----\nU1NIU0lHAAAAAQAAADMAAAALc3NoLWVkMjU1MTkAAAAg+qImwGMCy/grKZ50VxRHz3VfWW\nAL3QNbzIy2Nwcn+nQAAAADZ2l0AAAAAAAAAAZzaGE1MTIAAABTAAAAC3NzaC1lZDI1NTE5\nAAAAQLE0+MN5+pO/txMil6atre4nqUPbj80f88fEKfK6CB9fh9bHsiv9jWdtlfKZpEKMCD\nnp34edsiHaGQtC8wXVzQA=\n-----END SSH SIGNATURE-----",
+        "payload": "tree 499e6a95e4ab730caaf6c13770b7f36e01c576a9\nparent 9861da5c0ff6a76ec399f3ad31e6e34ac6add35e\nauthor Cursor Agent <cursoragent@cursor.com> 1789986045 +0000\ncommitter Cursor Agent <cursoragent@cursor.com> 1790197881 +0000\n\nfeat(teams): FileConsent and Graph SharePoint channel files\n\nPersonal 1:1 chats send/receive files via native FileConsent cards.\nChannel and group chats inline small text; other files upload to the\nconversation filesFolder through Microsoft Graph / SharePoint, then\npost a clickable link. Inbound HTML-only channel drops GET the Graph\nmessage and download SharePoint attachments.\n\nAlso stores unmentioned channel/group posts as observed context when\nRSC + require_mention are on (needed so inbound files and chatter\nshare the same message-read path).\n\nStacked on cursor/feat-teams-reactions-9eb4 so reaction review is not\nduplicated.\n\nCo-authored-by: tournierjc <tournierjc@users.noreply.github.com>\n",
+        "verified_at": "2026-09-23T21:11:42Z"
+      }
+    },
+    "url": "https://api.github.com/repos/NousResearch/hermes-agent/commits/bf5cbbad7e6956ae7024e808684ebe549a1320df",
+    "html_url": "https://github.com/NousResearch/hermes-agent/commit/bf5cbbad7e6956ae7024e808684ebe549a1320df",
+    "comments_url": "https://api.github.com/repos/NousResearch/hermes-agent/commits/bf5cbbad7e6956ae7024e808684ebe549a1320df/comments",
+    "author": {
+      "login": "cursoragent",
+      "id": 199161495,
+      "node_id": "U_kgDOC972lw",
+      "avatar_url": "https://avatars.githubusercontent.com/u/199161495?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/cursoragent",
+      "html_url": "https://github.com/cursoragent",
+      "followers_url": "https://api.github.com/users/cursoragent/followers",
+      "following_url": "https://api.github.com/users/cursoragent/following{/other_user}",
+      "gists_url": "https://api.github.com/users/cursoragent/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/cursoragent/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/cursoragent/subscriptions",
+      "organizations_url": "https://api.github.com/users/cursoragent/orgs",
+      "repos_url": "https://api.github.com/users/cursoragent/repos",
+      "events_url": "https://api.github.com/users/cursoragent/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/cursoragent/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "committer": {
+      "login": "cursoragent",
+      "id": 199161495,
+      "node_id": "U_kgDOC972lw",
+      "avatar_url": "https://avatars.githubusercontent.com/u/199161495?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/cursoragent",
+      "html_url": "https://github.com/cursoragent",
+      "followers_url": "https://api.github.com/users/cursoragent/followers",
+      "following_url": "https://api.github.com/users/cursoragent/following{/other_user}",
+      "gists_url": "https://api.github.com/users/cursoragent/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/cursoragent/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/cursoragent/subscriptions",
+      "organizations_url": "https://api.github.com/users/cursoragent/orgs",
+      "repos_url": "https://api.github.com/users/cursoragent/repos",
+      "events_url": "https://api.github.com/users/cursoragent/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/cursoragent/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "parents": [
+      {
+        "sha": "9861da5c0ff6a76ec399f3ad31e6e34ac6add35e",
+        "url": "https://api.github.com/repos/NousResearch/hermes-agent/commits/9861da5c0ff6a76ec399f3ad31e6e34ac6add35e",
+        "html_url": "https://github.com/NousResearch/hermes-agent/commit/9861da5c0ff6a76ec399f3ad31e6e34ac6add35e"
+      }
+    ]
+  },
+  {
+    "sha": "6aef09afe1bb6f91f49d49e2431fadea8c020abb",
+    "node_id": "C_kwDOUiW-xdoAKDZhZWYwOWFmZTFiYjZmOTFmNDlkNDllMjQzMWZhZGVhOGMwMjBhYmI",
+    "commit": {
+      "author": {
+        "name": "Cursor Agent",
+        "email": "cursoragent@cursor.com",
+        "date": "2026-09-21T11:03:35Z"
+      },
+      "committer": {
+        "name": "Cursor Agent",
+        "email": "cursoragent@cursor.com",
+        "date": "2026-09-23T21:12:52Z"
+      },
+      "message": "feat(teams): stream replies via Bot Framework activity updates\n\nImplement edit_message using conversations.activities.update (same client\nas FileConsent activities.delete), flatten ;messageid= conversation ids,\ncoalesce identical mid-stream edits, and fall back to a plain send when\nupdates are unsupported. Keep draft_stream_is_message off.\n\nCo-authored-by: tournierjc <tournierjc@users.noreply.github.com>",
+      "tree": {
+        "sha": "abb038772311dcc7673cbadd01bd353ca6d72abf",
+        "url": "https://api.github.com/repos/NousResearch/hermes-agent/git/trees/abb038772311dcc7673cbadd01bd353ca6d72abf"
+      },
+      "url": "https://api.github.com/repos/NousResearch/hermes-agent/git/commits/6aef09afe1bb6f91f49d49e2431fadea8c020abb",
+      "comment_count": 0,
+      "verification": {
+        "verified": true,
+        "reason": "valid",
+        "signature": "-----BEGIN SSH SIGNATURE-----\nU1NIU0lHAAAAAQAAADMAAAALc3NoLWVkMjU1MTkAAAAg+qImwGMCy/grKZ50VxRHz3VfWW\nAL3QNbzIy2Nwcn+nQAAAADZ2l0AAAAAAAAAAZzaGE1MTIAAABTAAAAC3NzaC1lZDI1NTE5\nAAAAQNkKnxbKkEwjwnWaAA+bKGimXyoWLKRCWpffjimtR4TdVpGp0qcIvxhXEVx3dqIJyb\nhANBqodHljboleAmejwwE=\n-----END SSH SIGNATURE-----",
+        "payload": "tree abb038772311dcc7673cbadd01bd353ca6d72abf\nparent bf5cbbad7e6956ae7024e808684ebe549a1320df\nauthor Cursor Agent <cursoragent@cursor.com> 1789988615 +0000\ncommitter Cursor Agent <cursoragent@cursor.com> 1790197972 +0000\n\nfeat(teams): stream replies via Bot Framework activity updates\n\nImplement edit_message using conversations.activities.update (same client\nas FileConsent activities.delete), flatten ;messageid= conversation ids,\ncoalesce identical mid-stream edits, and fall back to a plain send when\nupdates are unsupported. Keep draft_stream_is_message off.\n\nCo-authored-by: tournierjc <tournierjc@users.noreply.github.com>\n",
+        "verified_at": "2026-09-23T21:13:23Z"
+      }
+    },
+    "url": "https://api.github.com/repos/NousResearch/hermes-agent/commits/6aef09afe1bb6f91f49d49e2431fadea8c020abb",
+    "html_url": "https://github.com/NousResearch/hermes-agent/commit/6aef09afe1bb6f91f49d49e2431fadea8c020abb",
+    "comments_url": "https://api.github.com/repos/NousResearch/hermes-agent/commits/6aef09afe1bb6f91f49d49e2431fadea8c020abb/comments",
+    "author": {
+      "login": "cursoragent",
+      "id": 199161495,
+      "node_id": "U_kgDOC972lw",
+      "avatar_url": "https://avatars.githubusercontent.com/u/199161495?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/cursoragent",
+      "html_url": "https://github.com/cursoragent",
+      "followers_url": "https://api.github.com/users/cursoragent/followers",
+      "following_url": "https://api.github.com/users/cursoragent/following{/other_user}",
+      "gists_url": "https://api.github.com/users/cursoragent/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/cursoragent/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/cursoragent/subscriptions",
+      "organizations_url": "https://api.github.com/users/cursoragent/orgs",
+      "repos_url": "https://api.github.com/users/cursoragent/repos",
+      "events_url": "https://api.github.com/users/cursoragent/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/cursoragent/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "committer": {
+      "login": "cursoragent",
+      "id": 199161495,
+      "node_id": "U_kgDOC972lw",
+      "avatar_url": "https://avatars.githubusercontent.com/u/199161495?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/cursoragent",
+      "html_url": "https://github.com/cursoragent",
+      "followers_url": "https://api.github.com/users/cursoragent/followers",
+      "following_url": "https://api.github.com/users/cursoragent/following{/other_user}",
+      "gists_url": "https://api.github.com/users/cursoragent/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/cursoragent/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/cursoragent/subscriptions",
+      "organizations_url": "https://api.github.com/users/cursoragent/orgs",
+      "repos_url": "https://api.github.com/users/cursoragent/repos",
+      "events_url": "https://api.github.com/users/cursoragent/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/cursoragent/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "parents": [
+      {
+        "sha": "bf5cbbad7e6956ae7024e808684ebe549a1320df",
+        "url": "https://api.github.com/repos/NousResearch/hermes-agent/commits/bf5cbbad7e6956ae7024e808684ebe549a1320df",
+        "html_url": "https://github.com/NousResearch/hermes-agent/commit/bf5cbbad7e6956ae7024e808684ebe549a1320df"
+      }
+    ]
+  }
+]

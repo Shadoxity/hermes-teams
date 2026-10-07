@@ -1,0 +1,15 @@
+{
+  "template": "document",
+  "title": "Sample report.pdf",
+  "summary": "Example document card. Replace the sample link with the uploaded file's durable SharePoint URL.",
+  "facts": [
+    {"label": "Format", "value": "PDF"},
+    {"label": "Prepared by", "value": "Project team"}
+  ],
+  "sections": [
+    {"title": "Review notes", "text": "This example represents a report with findings and recommended next steps. Check the actual file before publishing its card."}
+  ],
+  "actions": [
+    {"label": "Open example file", "url": "https://example.com/reports/sample.pdf"}
+  ]
+}

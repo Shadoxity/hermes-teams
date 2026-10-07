@@ -1,0 +1,19 @@
+{
+  "template": "report",
+  "title": "Weekly delivery report",
+  "summary": "Example report: the draft and supporting documents are ready for review. Replace these details and links before publishing.",
+  "status": "Ready",
+  "facts": [
+    {"label": "Reporting period", "value": "5–9 October 2026"},
+    {"label": "Owner", "value": "Project team"},
+    {"label": "Next review", "value": "Friday"}
+  ],
+  "sections": [
+    {"title": "Completed", "text": "Prepared the draft report and supporting documents."},
+    {"title": "Review focus", "text": "Check the findings, confirm the owners, and identify any missing evidence."},
+    {"title": "Next steps", "text": "Review the findings and confirm the actions for next week."}
+  ],
+  "actions": [
+    {"label": "Open example report", "url": "https://example.com/reports/sample.pdf"}
+  ]
+}
