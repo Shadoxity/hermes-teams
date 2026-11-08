@@ -667,7 +667,9 @@ try:
         loaded = json.loads(skill_view(name=skill_name, file_path=reference))
         assert loaded["success"] and loaded["name"] == skill_name, loaded
         assert loaded["file"] == reference
-        assert Path(loaded["_source_path"]).resolve() == skill_root / reference
+        # _source_path is private and omitted by newer Hermes responses.
+        if "_source_path" in loaded:
+            assert Path(loaded["_source_path"]).resolve() == skill_root / reference
         assert loaded["content"] == (skill_root / reference).read_text(encoding="utf-8-sig")
     print("HERMES_TEAMS_DISCOVERY_OK")
 finally:
