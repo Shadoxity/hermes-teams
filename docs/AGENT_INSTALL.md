@@ -49,7 +49,7 @@ For regular updates, leave the install unpinned and verify it tracks this reposi
 
 A release-directory symlink remains an option for loading, but native updates reject a symlink whose target resolves outside the selected profile's `plugins/` directory. That layout requires its own release/symlink update procedure. A manually copied archive without Git/install provenance cannot use the native Git updater. Prefer the real checkout when the user expects future `hermes plugins update` support.
 
-Use the **selected Hermes runtime's environment manager** to prepare/verify the dependencies listed in `pyproject.toml`: `httpx>=0.27,<1`, `aiohttp>=3.9,<4`, and `microsoft-teams-apps==2.0.13.4`. Managed-runtime versions admit plugin selection and dependencies transactionally; do not mutate a committed dependency generation or assume an old in-checkout venv is the live runtime. This is a source plugin; it does not require packaging the entire flat repository with `pip install .`.
+Use the **selected Hermes runtime's environment manager** to prepare/verify the dependencies listed in `pyproject.toml`: `httpx>=0.27,<1`, `aiohttp>=3.9,<4`, and `microsoft-teams-apps>=2.1.1,<3`. Managed-runtime versions admit plugin selection and dependencies transactionally; do not mutate a committed dependency generation or assume an old in-checkout venv is the live runtime. This is a source plugin; it does not require packaging the entire flat repository with `pip install .`.
 
 Merge, rather than replace, these settings into the selected profile's config:
 

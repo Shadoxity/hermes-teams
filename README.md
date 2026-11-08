@@ -8,7 +8,7 @@ The plugin is **`hermes-teams`**, the platform remains **`teams`**, and its tool
 
 **Installing with an AI agent? Start with [the agent installation guide](docs/AGENT_INSTALL.md).** It covers discovery, the external plugin, Azure/Entra setup, Teams packaging and consent, verification, and rollback. Supply your own tenant, application, channel, and publisher settings.
 
-For manual setup, follow [Hermes installation](docs/INSTALL.md) and [Teams/Azure registration](docs/NEW_BOT.md). Use a pinned release or commit, the selected Hermes runtime, and a test channel before enabling normal traffic. The tested SDK is `microsoft-teams-apps==2.0.13.4`; Python 3.11 or later is required.
+For manual setup, follow [Hermes installation](docs/INSTALL.md) and [Teams/Azure registration](docs/NEW_BOT.md). Use a pinned release or commit, the selected Hermes runtime, and a test channel before enabling normal traffic. The SDK requirement is `microsoft-teams-apps>=2.1.1,<3` (validated with 2.1.1); Python 3.11 or later is required.
 
 ## Features
 
