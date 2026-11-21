@@ -18,6 +18,7 @@ import json
 import logging
 import re
 import sys
+import uuid
 from collections import deque
 from contextlib import contextmanager, suppress
 from typing import Any, Dict, Iterator, Optional
@@ -370,6 +371,8 @@ class TeamsAdapter(PersonalFilesMixin, TeamsTransportMixin, TeamsFilesMixin, Bas
         self._dedup = MessageDeduplicator(max_size=1000)
         # chat_id → ConversationReference so proactive cards use the right conversation type.
         self._conv_refs: Dict[str, Any] = {}
+        # prompt id → preview, reason, session, request, conversation, offered choices.
+        self._approval_previews: dict[str, tuple[str, str, str, Optional[str], str, tuple[str, ...]]] = {}
         self._require_mention: bool = self._parse_require_mention(config)
         # Outbound activity ids (bounded) so require_mention can exempt replies to our own messages.
         self._sent_ids: deque = deque(maxlen=500)
@@ -652,10 +655,10 @@ class TeamsAdapter(PersonalFilesMixin, TeamsTransportMixin, TeamsFilesMixin, Bas
         return await self._send_via_conv_ref(chat_id, MessageActivityInput().add_card(card), card)
 
     async def _send_via_conv_ref(self, chat_id: str, activity: Any, fallback: Any) -> Any:
-        """Send ``activity`` through the cached ConversationReference, else ``App.send(fallback)``."""
+        """Send to the exact conversation, preserving the cached regional endpoint."""
         conv_ref = self._conv_refs.get(chat_id)
         if conv_ref:
-            result = await self._app.activity_sender.send(activity, conv_ref)
+            result = await self._app.send(chat_id, activity, service_url=conv_ref.service_url)
         else:
             result = await self._app.send(chat_id, fallback)
         self._remember_sent(result)
@@ -679,7 +682,7 @@ class TeamsAdapter(PersonalFilesMixin, TeamsTransportMixin, TeamsFilesMixin, Bas
     async def _on_card_action(
         self, ctx: "ActivityContext[AdaptiveCardInvokeActivity]"
     ) -> "InvokeResponse[AdaptiveCardActionMessageResponse]":
-        from tools.approval import resolve_gateway_approval, has_blocking_approval
+        from tools.approval import has_blocking_approval, resolve_gateway_approval_card
 
         data = ctx.activity.value.action.data or {}
         hermes_action = data.get("hermes_action", "")
@@ -692,10 +695,25 @@ class TeamsAdapter(PersonalFilesMixin, TeamsTransportMixin, TeamsFilesMixin, Bas
         choice = _APPROVAL_CHOICES.get(hermes_action)
         if not choice:
             return self._invoke_message(t("platform.teams.approval.unknown_action"))
-        if not has_blocking_approval(session_key):
-            return self._invoke_card([TextBlock(text=t("platform.shared.approval_expired"), wrap=True)])
-        resolve_gateway_approval(session_key, choice)
-        body = _approval_body(data.get("cmd", ""), data.get("desc", ""))
+        saved = self._approval_previews.get(data.get("prompt_id", ""))
+        if not saved:
+            return self._invoke_message(t("platform.shared.approval_expired"))
+        cmd, desc, bound_session, bound_request, bound_chat, choices = saved
+        # Button payloads are client input. Even another valid request/session must not
+        # retarget this card, and a card copied into an unrelated chat is not authority.
+        if (session_key != bound_session or not bound_request or data.get("request_id") != bound_request
+                or getattr(ctx.activity.conversation, "id", "") != bound_chat or choice not in choices):
+            return self._invoke_message(t("platform.shared.approval_expired"))
+        from gateway.approval_actor import approval_refusal, refusal_text
+        clicker = getattr(ctx.activity.from_, "aad_object_id", None) or getattr(ctx.activity.from_, "id", "")
+        if requester := approval_refusal(session_key, clicker, extra=self.config.extra,
+                                         request_id=data.get("request_id"), choice=choice):
+            return self._invoke_message(refusal_text(requester))
+        if not has_blocking_approval(session_key) or not resolve_gateway_approval_card(
+                session_key, choice, data.get("request_id"), actor_id=clicker, extra=self.config.extra):
+            return self._invoke_card([*_approval_body(cmd, desc),
+                TextBlock(text=t("platform.shared.approval_expired"), wrap=True)])
+        body = _approval_body(cmd, desc)
         body.append(TextBlock(text=t(_APPROVAL_LABEL_KEYS[choice]), wrap=True, weight="Bolder"))
         return self._invoke_card(body)
 
@@ -721,6 +739,7 @@ class TeamsAdapter(PersonalFilesMixin, TeamsTransportMixin, TeamsFilesMixin, Bas
         return None
 
     _EA_CMD_BUDGET = 2000
+    _EA_PREVIEWS_KEPT = 256
     _EA_CARD_ACTIONS = {"once": "approve_once", "session": "approve_session", "always": "approve_always", "deny": "deny"}
     _EA_CARD_STYLES = {"primary": "positive", "danger": "destructive"}
 
@@ -728,15 +747,26 @@ class TeamsAdapter(PersonalFilesMixin, TeamsTransportMixin, TeamsFilesMixin, Bas
         """Adaptive Card: the shared text is split into its header / fenced command / reason blocks."""
         if not self._app:
             return SendResult(success=False, error="Teams app not initialized")
-        # Button data carries a truncated cmd — just enough to reconstruct the card body.
-        btn_data_base = {"session_key": prompt.session_key, "cmd": _truncate(prompt.command, 200), "desc": prompt.description}
+        # The resolved card uses this server-side preview, never client-supplied command text.
+        cmd = self._truncate_preview(prompt.command, self._EA_CMD_BUDGET)
+        prompt_id = uuid.uuid4().hex
+        self._approval_previews[prompt_id] = (
+            cmd, prompt.description, prompt.session_key, prompt.request_id, prompt.chat_id, tuple(prompt.choices))
+        if len(self._approval_previews) > self._EA_PREVIEWS_KEPT:
+            self._approval_previews.pop(next(iter(self._approval_previews)))
+        btn_data_base = {"session_key": prompt.session_key, "prompt_id": prompt_id}
+        if prompt.request_id:
+            btn_data_base["request_id"] = prompt.request_id
         actions = []
         for label, choice, style in prompt.actions:
             kw = {"style": self._EA_CARD_STYLES[style]} if style else {}
             actions.append(ExecuteAction(
                 title=label, verb="hermes_approve",
                 data={**btn_data_base, "hermes_action": self._EA_CARD_ACTIONS[choice]}, **kw))
-        body = _approval_body(self._truncate_preview(prompt.command, self._EA_CMD_BUDGET), prompt.description, always=True)
+        body = _approval_body(cmd, prompt.description, always=True)
+        if cmd != prompt.command:
+            body.append(TextBlock(wrap=True, text=t("gateway.exec_approval.truncated_" + (
+                "full_above" if "once" in prompt.choices else "deny_only"), total=len(prompt.command))))
         body.append(TextBlock(text=format_approval_deadline_line(approval_timeout_seconds()), wrap=True))
         if prompt.smart_denied:
             body.append(TextBlock(text=self._EA_SMART_DENY_LINE.strip(), wrap=True))

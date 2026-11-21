@@ -1,7 +1,7 @@
 name: hermes-teams
 label: Hermes Teams
 kind: platform
-version: 0.1.0
+version: 0.1.1
 description: >-
   External Microsoft Teams adapter for Hermes, with channel file transfers,
   streaming, reactions, and structured Adaptive Card posts.
