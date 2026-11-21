@@ -655,10 +655,10 @@ class TeamsAdapter(PersonalFilesMixin, TeamsTransportMixin, TeamsFilesMixin, Bas
         return await self._send_via_conv_ref(chat_id, MessageActivityInput().add_card(card), card)
 
     async def _send_via_conv_ref(self, chat_id: str, activity: Any, fallback: Any) -> Any:
-        """Send ``activity`` through the cached ConversationReference, else ``App.send(fallback)``."""
+        """Send to the exact conversation, preserving the cached regional endpoint."""
         conv_ref = self._conv_refs.get(chat_id)
         if conv_ref:
-            result = await self._app.activity_sender.send(activity, conv_ref)
+            result = await self._app.send(chat_id, activity, service_url=conv_ref.service_url)
         else:
             result = await self._app.send(chat_id, fallback)
         self._remember_sent(result)

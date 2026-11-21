@@ -16,7 +16,8 @@ import socket
 import subprocess
 import sys
 from types import SimpleNamespace
-from unittest.mock import AsyncMock, Mock
+from typing import Any, cast
+from unittest.mock import AsyncMock, Mock, create_autospec
 
 import httpx
 import pytest
@@ -75,10 +76,12 @@ def adapter():
     # The real gateway supplies this callback. Approval-card permissions are
     # separate and must not become an alternate authorization implementation.
     value.set_authorization_check(lambda *args, **kwargs: True)
-    value._app = SimpleNamespace(
-        id="test-bot", send=AsyncMock(return_value=SimpleNamespace(id="sent-1")),
-        reply=AsyncMock(return_value=SimpleNamespace(id="reply-1")),
-        activity_sender=SimpleNamespace(send=AsyncMock(return_value=SimpleNamespace(id="card-1"))))
+    from microsoft_teams.apps import App
+
+    value._app = create_autospec(App, instance=True, spec_set=True)
+    value._app.id = "test-bot"
+    value._app.send.return_value = SimpleNamespace(id="sent-1")
+    value._app.reply.return_value = SimpleNamespace(id="reply-1")
     value.handle_message = AsyncMock()
     value._graph_files = SimpleNamespace(aclose=AsyncMock(), download_attachment=AsyncMock(return_value=DownloadedFile(
         name="report.pdf", data=FILE_BYTES, content_type="application/pdf")),
@@ -386,15 +389,116 @@ async def test_new_channel_card_uses_create_conversation_even_with_live_sdk(adap
 
 
 @pytest.mark.asyncio
+async def test_native_approval_cached_dm_uses_public_sdk_send(adapter):
+    from microsoft_teams.apps import App
+
+    assert adapter_module.check_teams_requirements()
+    # Strict installed-SDK spec: fabricated activity_sender attributes must fail.
+    app = create_autospec(App, instance=True, spec_set=True)
+    app.send.return_value = SimpleNamespace(id="approval-card")
+    adapter._app = app
+    chat = "a:personal-conversation"
+    service_url = "https://smba.trafficmanager.net/emea/"
+    adapter._conv_refs[chat] = SimpleNamespace(
+        service_url=service_url, conversation=SimpleNamespace(id=chat))
+
+    result = await adapter.send_exec_approval(
+        chat, "echo approval-test", "teams:test-session", request_id="request-1",
+        allow_session=False, allow_permanent=False)
+
+    assert result.success, result.error
+    assert result.message_id == "approval-card"
+    app.send.assert_awaited_once()
+    destination, activity = app.send.await_args.args
+    assert destination == chat
+    assert app.send.await_args.kwargs == {"service_url": service_url}
+    assert isinstance(activity, MessageActivityInput)
+    payload = activity.model_dump(by_alias=True, exclude_none=True)
+    card = payload["attachments"][0]["content"]
+    assert card["type"] == "AdaptiveCard"
+    assert {row["data"]["request_id"] for row in card["actions"]} == {"request-1"}
+    assert {row["data"]["session_key"] for row in card["actions"]} == {"teams:test-session"}
+    assert "replyToId" not in payload
+    assert "approval-card" in adapter._sent_ids
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("cached", [True, False], ids=["cached", "fallback"])
+@pytest.mark.parametrize("chat", ["a:personal-conversation", THREAD], ids=["dm", "channel-thread"])
+async def test_card_transport_executes_installed_sdk_send(adapter, cached, chat):
+    from microsoft_teams.api import SentActivity
+    from microsoft_teams.apps import App
+
+    assert adapter_module.check_teams_requirements()
+    # Execute the installed App.send and send_or_update_activity implementations.
+    # Skip startup entirely: no listener/auth initialization; only the connector
+    # create_activity boundary is mocked, returning the actual SDK response model.
+    app = cast(Any, object.__new__(App))
+    app.credentials = SimpleNamespace(client_id="test-bot")
+    app._initialized = True
+    endpoint = "https://smba.trafficmanager.net/emea/"
+    connector = SimpleNamespace(create_activity=AsyncMock(
+        return_value=SentActivity(id="sdk-card", activity_params=MessageActivityInput())))
+    scoped = SimpleNamespace(conversations=connector)
+    app.api = SimpleNamespace(service_url="https://smba.trafficmanager.net/teams", clone=Mock(return_value=scoped),
+                              conversations=connector)
+    adapter._app = app
+    if cached:
+        adapter._conv_refs[chat] = SimpleNamespace(
+            service_url=endpoint, conversation=SimpleNamespace(id=chat))
+
+    result = await adapter.send_exec_approval(
+        chat, "echo sdk-approval", "teams:sdk-session", request_id="sdk-request",
+        allow_session=False, allow_permanent=False, metadata={"thread_id": "parent-not-conversation"})
+
+    assert result.success, result.error
+    assert result.message_id == "sdk-card"
+    destination, sent = connector.create_activity.await_args.args
+    assert destination == chat  # full ;messageid= key, never the root activity ID
+    payload = sent.model_dump(by_alias=True, exclude_none=True)
+    assert payload["conversation"]["id"] == chat
+    assert payload["from"]["id"] == "test-bot"
+    card = payload["attachments"][0]["content"]
+    assert card["type"] == "AdaptiveCard"
+    assert {row["data"]["request_id"] for row in card["actions"]} == {"sdk-request"}
+    assert {row["data"]["session_key"] for row in card["actions"]} == {"teams:sdk-session"}
+    assert "replyToId" not in payload  # SDK routes by conversation; metadata is not a destination
+    assert "sdk-card" in adapter._sent_ids
+    if cached:
+        app.api.clone.assert_called_once_with(service_url=endpoint, agentic_identity=None)
+    else:
+        app.api.clone.assert_not_called()
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("cached", [True, False], ids=["cached", "fallback"])
+async def test_native_approval_transport_failure_is_reported_without_duplicate_send(adapter, cached):
+    assert adapter_module.check_teams_requirements()
+    if cached:
+        adapter._conv_refs[THREAD] = context().conversation_ref
+    adapter._app.send.side_effect = RuntimeError("connector unavailable")
+
+    result = await adapter.send_exec_approval(
+        THREAD, "echo approval-test", "teams:test-session", request_id="request-1",
+        allow_session=False, allow_permanent=False)
+
+    assert not result.success and result.retryable
+    assert result.error == "connector unavailable"
+    assert result.message_id is None
+    adapter._app.send.assert_awaited_once()
+    assert not adapter._sent_ids
+
+
+@pytest.mark.asyncio
 async def test_rich_post_routes_to_cached_thread_reference(adapter):
     ctx = context()
     adapter._conv_refs[THREAD] = ctx.conversation_ref
     result = await adapter.send_rich_post(THREAD, {"template": "status", "title": "Ready"})
-    assert result.success and result.message_id == "card-1"
-    sent, reference = adapter._app.activity_sender.send.await_args.args
-    assert isinstance(sent, MessageActivityInput) and reference is ctx.conversation_ref
+    assert result.success and result.message_id == "sent-1"
+    destination, sent = adapter._app.send.await_args.args
+    assert isinstance(sent, MessageActivityInput) and destination == THREAD
+    assert adapter._app.send.await_args.kwargs == {"service_url": ctx.conversation_ref.service_url}
     assert sent.model_dump(by_alias=True)["replyToId"] == "42"
-    adapter._app.send.assert_not_awaited()
     adapter._app.reply.assert_not_awaited()
 
 

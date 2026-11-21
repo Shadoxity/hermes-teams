@@ -74,6 +74,12 @@ This emits validated card JSON, not a Teams-rendered preview. Use real approved 
 - Opaque sharing URLs without a resolvable file path may be rejected. An unavailable attachment is reported as unavailable.
 - Unmentioned channel chatter is not passively captured. Sender authorization precedes credentialed file retrieval.
 
+## 0.1.1 (unreleased): native approval card security and transport
+
+- Exact-request authorization: approval cards bind a server-side preview to the request ID, session, originating conversation, and offered choices. Clicks use the shared actor authorization and exact-request resolver; stale, tampered, or unauthorized clicks fail closed. Full-command presentation and Deny-only safety remain intact.
+- SDK transport: cached-conversation card/attachment delivery uses public `App.send(conversation_id, activity, service_url=...)` instead of the removed `App.activity_sender`. Keep the exact conversation ID, including `;messageid=<root-id>` for channel threads; a root activity ID alone is not a conversation ID. Preserve the cached regional service URL and returned activity ID tracking. No-reference delivery continues to use the SDK's default endpoint.
+- Compatibility regression tests use a strict spec from the installed `App` and execute the real SDK 2.1.1 send/routing code with only connector boundaries mocked. Offline tests do not prove Teams rendering, human approval, or child continuation; verify those separately after a reviewed deployment. No approval policy or actor authorization is relaxed by this transport repair.
+
 ## Development
 
 ```console
@@ -86,6 +92,8 @@ Hermes integration tests use the real core interfaces and installed SDK. Run the
 ```console
 python scripts/test_with_hermes.py --hermes-source /path/to/hermes-agent
 ```
+
+For managed installations, read `packages.venv.environment` from the active installation's `facts.json` and use its `bin/python`; do not assume an older generation is active. Keep additional test dependencies in a scratch directory and pass `--test-deps /absolute/scratch/test-deps` (Hermes core needs `ruamel.yaml`, not just PyYAML). Use `-o asyncio_default_fixture_loop_scope=function` when required by the installed pytest-asyncio. Never install test packages into the production environment.
 
 Keep deployment credentials, configuration, logs, generated Teams packages, and branded assets outside this repository. Follow [AGENTS.md](AGENTS.md) for development boundaries.
 
